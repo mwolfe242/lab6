@@ -66,81 +66,6 @@ class Global {
 	}
 } gl;
 
-class Ship {
-    public:
-	Vec dir;
-	Vec pos;
-	Vec vel;
-	float angle;
-	float color[3];
-    public:
-	Ship() {
-	    VecZero(dir);
-	    pos[0] = (Flt)(gl.xres/2);
-	    pos[1] = (Flt)(gl.yres/2);
-	    pos[2] = 0.0f;
-	    VecZero(vel);
-	    angle = 0.0;
-	    color[0] = color[1] = color[2] = 1.0;
-	}
-};
-class Game {
-    public:
-	Ship ship;
-	Asteroid *ahead;
-	Bullet *barr;
-	int nasteroids;
-	int nbullets;
-	int destroyed;
-	struct timespec bulletTimer;
-	struct timespec mouseThrustTimer;
-	bool mouseThrustOn;
-    public:
-	Game() {
-	    destroyed = 0;
-	    ahead = NULL;
-	    barr = new Bullet[MAX_BULLETS];
-	    nasteroids = 0;
-	    nbullets = 0;
-	    mouseThrustOn = false;
-	    //build 10 asteroids...
-	    for (int j=0; j<10; j++) {
-		Asteroid *a = new Asteroid;
-		a->nverts = 8;
-		a->radius = rnd()*80.0 + 40.0;
-		Flt r2 = a->radius / 2.0;
-		Flt angle = 0.0f;
-		Flt inc = (PI * 2.0) / (Flt)a->nverts;
-		for (int i=0; i<a->nverts; i++) {
-		    a->vert[i][0] = sin(angle) * (r2 + rnd() * a->radius);
-		    a->vert[i][1] = cos(angle) * (r2 + rnd() * a->radius);
-		    angle += inc;
-		}
-		a->pos[0] = (Flt)(rand() % gl.xres);
-		a->pos[1] = (Flt)(rand() % gl.yres);
-		a->pos[2] = 0.0f;
-		a->angle = 0.0;
-		a->rotate = rnd() * 4.0 - 2.0;
-		a->color[0] = (float)rand()/(float)RAND_MAX;
-		a->color[1] = (float)rand()/(float)RAND_MAX;
-		a->color[2] = (float)rand()/(float)RAND_MAX;
-		a->vel[0] = (Flt)(rnd()*2.0-1.0);
-		a->vel[1] = (Flt)(rnd()*2.0-1.0);
-		//std::cout << "asteroid" << std::endl;
-		//add to front of linked list
-		a->next = ahead;
-		if (ahead != NULL)
-		    ahead->prev = a;
-		ahead = a;
-		++nasteroids;
-	    }
-	    clock_gettime(CLOCK_REALTIME, &bulletTimer);
-	}
-	~Game() {
-	    delete [] barr;
-	}
-} g;
-
 //X Windows variables
 class X11_wrapper {
     private:
@@ -253,28 +178,27 @@ class X11_wrapper {
 void init_opengl();
 int check_keys(XEvent *e);
 void render();
+void showName(int x,int y);
 
 //==========================================================================
 // M A I N
 //==========================================================================
 int main()
 {
-    logOpen();
     init_opengl();
     srand(time(NULL));
     x11.set_mouse_position(100, 100);
     int done=0;
     while (!done) {
-	while (x11.getXPending()) {
-	    XEvent e = x11.getXNextEvent();
-	    x11.check_resize(&e);
-	    done = check_keys(&e);
+		while (x11.getXPending()) {
+			XEvent e = x11.getXNextEvent();
+			x11.check_resize(&e);
+			done = check_keys(&e);
 	}
 	render();
 	x11.swapBuffers();
     }
     cleanup_fonts();
-    logClose();
     return 0;
 }
 
@@ -300,7 +224,6 @@ void init_opengl()
     initialize_fonts();
 }
 
-
 int check_keys(XEvent *e)
 {
     //keyboard input?
@@ -324,24 +247,27 @@ int check_keys(XEvent *e)
     switch (key) {
 	case XK_Escape:
 	    return 1;
-	case XK_s:
-	    break;
-	case XK_Down:
-	    break;
-	case XK_equal:
-	    break;
-	case XK_minus:
-	    break;
     }
     return 0;
 }
 
+
+
+
+void showName(int x,int y){
+	Rect r;
+	r.bot = y;
+	r.left = x;
+	r.center = x;
+	unsigned int c;
+	c=0x00ff0000;
+	ggprint8b(&r, 16, c, "Maximillian Wolfe");
+}
+
 void render()
 {
-    Rect r;
     glClear(GL_COLOR_BUFFER_BIT);
     showName(gl.xres/2,gl.yres/2);
-	glEnd();
 }
 
 	
