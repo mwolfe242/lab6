@@ -1,6 +1,6 @@
-//
-//
-//
+//name:Maximillian Wolfe
+//date: 3/2/2018
+//3350
 //
 //program: asteroids.cpp
 //author:  Gordon Griesel
