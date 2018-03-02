@@ -282,6 +282,8 @@ class X11_wrapper {
 
 //function prototypes
 void init_opengl();
+void drawBox(int x, int y);
+void showName(int x, int y);
 void check_mouse(XEvent *e);
 int check_keys(XEvent *e);
 void physics();
@@ -744,6 +746,7 @@ void physics()
 
 void render()
 {
+	
     Rect r;
     glClear(GL_COLOR_BUFFER_BIT);
     //
@@ -754,6 +757,7 @@ void render()
     ggprint8b(&r, 16, 0x00ffff00, "n bullets: %i", g.nbullets);
     ggprint8b(&r, 16, 0x00ffff00, "n asteroids: %i", g.nasteroids);
     ggprint8b(&r, 16, 0x00ffff00, "n asteroids destroyed: %i",g.destroyed);
+    drawBox(gl.xres/2,gl.yres/2);
     //
     //-------------
     //Draw the ship

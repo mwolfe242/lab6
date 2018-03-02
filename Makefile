@@ -1,10 +1,24 @@
-#3350 lab6
+#
+# Makefile for asteroids game
+#
+# Enter one of the following
+#
+# make
+# make all
+# make asteroids
+# make clean
+#
+CFLAGS = -I ./include
+#LFLAGS = -lrt -lX11 -lGLU -lGL -pthread -lm
+LFLAGS = -lrt -lX11 -lGL
 
-all: maximillianW
+all: asteroids
 
-maximillianW: maximillianW.cpp
-	g++ maximillianW.cpp libggfonts.a -lrt -lX11 -lGL -Wall -o maximillianW
+asteroids: asteroids.cpp log.cpp timers.cpp
+	g++ $(CFLAGS) asteroids.cpp maximillianW.cpp log.cpp timers.cpp \
+	libggfonts.a -Wall $(LFLAGS) -o asteroids
 
-clean: 
-	rm -f maximillianW
+clean:
+	rm -f asteroids
 	rm -f *.o
+
